@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/monokh/slack-gitlab-mr-reminder#readme",
   "dependencies": {
-    "@slack/client": "^3.10.0",
-    "js-yaml": "^3.9.0",
-    "moment": "^2.18.1",
-    "request": "^2.81.0",
-    "request-promise-native": "^1.0.4"
+    "@slack/client": "^5.0.0",
+    "js-yaml": "^3.14.0",
+    "moment": "^2.29.1",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.9"
   },
   "devDependencies": {
-    "jest": "^20.0.4"
+    "jest": "^26.5.0"
   }
 }
