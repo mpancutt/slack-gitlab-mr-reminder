@@ -9,9 +9,19 @@ class SlackGitlabMRReminder {
   constructor(options) {
     this.options = options;
     this.options.gitlab.external_url = this.options.gitlab.external_url || 'https://gitlab.com';
+    this.options.gitlab.label = this.options.gitlab.label || null;
+    this.options.gitlab.include_wip = this.options.gitlab.include_wip || null;
+    this.options.gitlab.threshold = (this.options.gitlab.threshold == null) ?  1 : parseInt(this.options.gitlab.threshold);
     this.options.slack.name = this.options.slack.name || 'GitLab Reminder';
     this.options.slack.message = this.options.slack.message || 'Merge requests are overdue:';
-    this.gitlab = new GitLab(this.options.gitlab.external_url, this.options.gitlab.access_token, this.options.gitlab.group);
+    this.gitlab = new GitLab(
+      this.options.gitlab.external_url,
+      this.options.gitlab.access_token,
+      this.options.gitlab.group,
+      this.options.gitlab.label,
+      this.options.gitlab.include_wip,
+      this.options.gitlab.threshold
+    );
     this.webhook = new slack.IncomingWebhook(this.options.slack.webhook_url, {
       username: this.options.slack.name,
       iconUrl: SLACK_LOGO_URL,
@@ -35,12 +45,12 @@ class SlackGitlabMRReminder {
       attachments
     };
   }
-  
+
   remind() {
     return this.gitlab.getGroupMergeRequests()
     .then((merge_requests) => {
       return merge_requests.filter((mr) => {
-        return moment().diff(moment(mr.updated_at), 'days') > 0;
+        return moment().diff(moment(mr.updated_at), 'days') >= this.options.gitlab.threshold;
       });
     })
     .then((merge_requests) => {
